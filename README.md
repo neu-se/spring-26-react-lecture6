@@ -20,7 +20,16 @@ v add React to the frontend, remove the backend
 https://github.com/neu-se/spring-26-react
 ```
 
-The functional content of this project is a minimal Express transcript API.
+The functional content of this project is a minimal Express transcript API,
+for a very simple transcript server, and tests using Supertest.
+
+The API has the following endpoints:
+
+| Endpoint             | Method | Description                         |
+| -------------------- | ------ | ----------------------------------- |
+| `/api/addStudent`    | POST   | Add a new student                   |
+| `/api/addGrade`      | POST   | Add a grade for an existing student |
+| `/api/getTranscript` | POST   | Look up information for a student   |
 
 ## Base configuration
 
@@ -35,9 +44,6 @@ support:
 - `npm run prettier` checks formatting, and `npm run prettier:fix` writes
   formatted files back
 - `npm run test` runs Vitest tests and reports coverage
-
-When appropriate, projects should also have the following scripts:
-
 - `npm run dev` starts a development server or watch process
 - `npm run build` prepares the project for production-style deployment
 - `npm start` runs the project in production style
