@@ -14,18 +14,23 @@ import reactRefresh from 'eslint-plugin-react-refresh';
  */
 const commonNamingConventions = [
   {
-    // Variables and functions, are camelCase: nimGameService, isDone
-    selector: 'variable',
+    // Variables are camelCase: `nimGameService`, `row`
+    selector: ['variable'],
     format: ['camelCase'],
     leadingUnderscore: 'allow',
   },
   {
-    // Types and class names are PascalCase: GameService, NimState
+    // Functions, methods, and members are too: `allGuessed`, `start`, `viewAs`, `isDone`
+    selector: ['function', 'method', 'memberLike'],
+    format: ['camelCase'],
+  },
+  {
+    // Types and class names are PascalCase: `GameService`, `NimState`
     selector: 'typeLike',
     format: ['PascalCase'],
   },
   {
-    // Global constants are UPPER_CASE: PORT, THREAD_API_URL, DEBUG_SOCKETS
+    // Global constants are UPPER_CASE: `PORT`, `THREAD_API_URL`
     selector: 'variable',
     modifiers: ['global', 'const'],
     types: ['boolean', 'number', 'string', 'array'],
@@ -33,7 +38,7 @@ const commonNamingConventions = [
   },
   {
     // Private methods and fields must have a leading underscore: this._count
-    selector: 'memberLike',
+    selector: ['memberLike', 'method'],
     modifiers: ['private'],
     format: ['camelCase'],
     leadingUnderscore: 'require',
@@ -42,7 +47,6 @@ const commonNamingConventions = [
 
 export default defineConfig([
   globalIgnores([
-    // Includes some ignores that aren't used in all projects
     '**/build', // legacy output directory
     '**/dist', // vite's output directory
     '**/.stryker-tmp/', // stryker mutation reports
@@ -95,7 +99,7 @@ export default defineConfig([
         'error',
         ...commonNamingConventions,
         {
-          // keyv repository models are more like classes with static methods
+          // Keyv repository models are more like classes with static methods
           // than other constants, so this rule makes them PascalCase
           // (`GameRepo`) instead of the default camelCase.
           selector: 'variable',
@@ -129,21 +133,18 @@ export default defineConfig([
         'error',
         ...commonNamingConventions,
         {
-          // React components are functions, so they want to be PascalCase;
-          selector: 'variable',
-          types: ['function'],
+          // React components want to be PascalCase: `AuthContext`, `ThreadPage`
+          // Therefore, the camelCase-only restriction is relaxed for globals.
+          selector: ['function', 'variable'],
+          modifiers: ['global'],
           format: ['camelCase', 'PascalCase'],
         },
       ],
-      // It is difficult to totally avoid floating promises in certain React
-      // contexts, but they can nevertheless be a source of errors, so it may
-      // be worth removing this exception and explicitly marking such promises
-      // with 'void', or to make them warnings
-      '@typescript-eslint/no-floating-promises': 'off',
     },
   },
   {
-    // Test files may need to make more use of the any type
+    // Test files may need to make use of the `any` type in a way we want to
+    // prevent in normal code.
     files: ['**/*.{spec,test}.{ts,tsx}', '**/tests'],
     rules: {
       '@typescript-eslint/no-unsafe-assignment': 'off',

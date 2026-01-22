@@ -2,9 +2,45 @@
 
 This is a base project for CS4530, Software Engineering at Northeastern.
 
+This repository is part of a tree of template-like projects:
+
+```
+https://github.com/neu-se/spring-26-base
+|
+|
+v add an Express server and API tests
+https://github.com/neu-se/spring-26-express
+|
+|
+v add a Vite frontend for a simple client/server setup
+https://github.com/neu-se/spring-26-vite
+|
+|
+v add React to the frontend, remove the backend
+https://github.com/neu-se/spring-26-react
+```
+
 ## Base configuration
 
-### ESLint configuration
+### NPM Scripts
+
+This sets up a set of commands that CS4530 projects should consistently
+support:
+
+- `npm run check` runs TypeScript
+- `npm run lint` runs ESLint, and `npm run lint:fix` runs eslint with the
+  `--fix` option
+- `npm run prettier` checks formatting, and `npm run prettier:fix` writes
+  formatted files back
+- `npm run test` runs Vitest tests and reports coverage
+
+When appropriate, projects should also have the following scripts:
+
+- `npm run dev` starts a development server or watch process
+- `npm run build` prepares the project for production-style deployment
+- `npm start` runs the project in production style
+
+### ESLint
 
 This base project has an opinionated eslint configuration that heavily relies
 on typescript-eslint.
@@ -25,7 +61,7 @@ Includes a `.prettierrc` file with some reasonable settings and a
 `.vscode/settings.json` file that sets javascript, typescript, and json files
 to use the prettier editor as the default.
 
-### LF file endings
+### LF Line Endings
 
 The `.prettierrc`, `.gitattributes`, and `.vscode/settings.json` files
 conspire to generally force projects to use `\n` file endings instead of
