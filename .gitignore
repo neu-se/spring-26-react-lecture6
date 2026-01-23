@@ -115,6 +115,9 @@ shared/package-lock.json
 playwright-report/
 test-results/
 
+# JetBrains
+.idea
+
 # misc
 client/build
 server/reports
