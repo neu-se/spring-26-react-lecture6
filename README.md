@@ -1,10 +1,10 @@
-# Base project
+# CS4530 Template Project
 
-This is a base project for CS4530, Software Engineering at Northeastern.
-
-This repository is part of a tree of template-like projects:
+This is a template project for CS4530, Software Engineering at Northeastern.
+It is part of a tree of template projects:
 
 ```
+Base configuration:
 https://github.com/neu-se/spring-26-base
 |
 |
@@ -39,14 +39,14 @@ The Express server's API has the following endpoints:
 
 ### NPM Scripts
 
-This sets up a set of commands that CS4530 projects should consistently
+This sets up a set of commands that CS4530 templates should consistently
 support:
 
 - `npm run check` runs TypeScript
 - `npm run lint` runs ESLint, and `npm run lint:fix` runs eslint with the
   `--fix` option
 - `npm run prettier` checks formatting, and `npm run prettier:fix` writes
-  formatted files back
+  formatted files back to disk
 - `npm run test` runs Vitest tests and reports coverage
 - `npm run dev` starts a development server or watch process
 - `npm run build` prepares the project for production-style deployment
