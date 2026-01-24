@@ -6,6 +6,7 @@ logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
 lerna-debug.log*
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
@@ -74,6 +75,7 @@ typings/
 
 # dotenv environment variables file
 .env*
+*.local
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
@@ -83,7 +85,17 @@ typings/
 
 # Nuxt.js build / generate output
 .nuxt
+
+# Nuxt or vite build directories
 dist
+dist-ssr
+
+# Some unknown vite suggestions
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 
 # Gatsby files
 .cache/
