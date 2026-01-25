@@ -8,6 +8,7 @@ export const app = express();
 app.use(express.json());
 const db = new TranscriptDB();
 
+/* Handle API requests to create a new student record */
 const zAddStudentBody = z.object({
   password: z.string(),
   studentName: z.string(),
@@ -24,6 +25,7 @@ app.post('/api/addStudent', (req, res) => {
   }
 });
 
+/* Handle API requests to add a grade to a student */
 const zAddGradeBody = z.object({
   password: z.string(),
   studentID: z.int().gte(0),
@@ -44,6 +46,7 @@ app.post('/api/addGrade', (req, res) => {
   }
 });
 
+/* Handle API requests to retrieve a student transcript */
 const zGetTranscriptBody = z.object({
   password: z.string(),
   studentID: z.int().gte(0),
