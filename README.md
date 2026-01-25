@@ -94,8 +94,8 @@ defaults. Deviations from this principle should be justified and documented
 Notable exceptions to this principle:
 
 - `.gitignore` takes a kitchen-sink approach and should freely accept
-  additions (for example, if a student accidentally checks in a file that
-  could have been ignored)
+  additions. (For example, if a student accidentally checks in a file that
+  could have been ignored, it makes sense to add that file here.)
 - The ESLint configuration is a maximalist attempt at keeping new TypeScript
   programmers on the rails in a complicated codebase, and also giving them a
   sense of working inside style conventions of a project that may differ from
@@ -103,7 +103,7 @@ Notable exceptions to this principle:
 
   (Rob has told students we banned `i++` with `noPlusPlus` just to give them
   the experience of being annoyed by the style guide of a company they're
-  working for. He may or may not have been kidding.)
+  working for. He was only sort of kidding.)
 
 - If we can have all project variants using the _exact_ same `tsconfig.json`
   file or `eslint.config.mjs` file by adding a bit of cruft to the base
@@ -111,10 +111,10 @@ Notable exceptions to this principle:
   copy-pasted, and so the fewer copies of configuration files there are, the
   better.
 
-  This is why `tsconfig.json` ignores the `./frontend` and `./client`
-  directories right off the bat and why `eslint.config.mjs` includes React's
-  Rules of Hooks despite most of the project variants not including any React
-  code.
+  This is why the `.vscode/settings.json` applies Prettier to html and css
+  files even though that's not relevant to the base project, and why
+  `eslint.config.mjs` includes React's Rules of Hooks despite most of the
+  project variants not including any React code.
 
 ### NPM Scripts
 
@@ -176,14 +176,10 @@ enables:
 
 ### Prettier
 
-The `.prettierrc` file is intended to use some reasonable defaults, and a
-`.vscode/settings.json` file sets javascript, typescript, and json files to
-use the prettier editor as the default.
-
-NOTE 2026-01: In the future, this file could be made more minimal and
-default-tuned in keeping with the minimalist principles: there's not an
-obvious need to use non-default options for `jsxSingleQuote`, `quoteProps`,
-`singleQuote`, `arrowParens`, and `bracketSameLine`.
+The `.prettierrc` file is intended to use some reasonable defaults. A
+`.vscode/settings.json` file is added to encourage Visual Studio Code to treat
+Prettier as the default formatter for javascript, typescript, json, css, and
+html files even if a students' global configuration uses other defaults.
 
 ### LF Line Endings
 
