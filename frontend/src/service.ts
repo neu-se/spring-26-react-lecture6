@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 const zAddStudentResponse = z.union([
   z.object({ error: z.string() }),
@@ -16,14 +16,14 @@ export async function addStudent(
   password: string,
   studentName: string,
 ): Promise<z.infer<typeof zAddStudentResponse>> {
-  if (studentName === '') {
-    return { error: 'Student name must be non-empty' };
+  if (studentName === "") {
+    return { error: "Student name must be non-empty" };
   }
 
   try {
-    const response = await fetch('/api/addStudent', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    const response = await fetch("/api/addStudent", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         password,
         studentName,
@@ -58,7 +58,7 @@ export async function addGrade(
 ): Promise<z.infer<typeof zAddGradeResponse>> {
   const studentID = parseInt(studentIDStr);
   if (isNaN(studentID) || `${studentID}` !== studentIDStr || studentID < 0) {
-    return { error: 'Student ID is invalid' };
+    return { error: "Student ID is invalid" };
   }
 
   const courseGrade = parseFloat(courseGradeStr);
@@ -68,17 +68,17 @@ export async function addGrade(
     courseGrade < 0 ||
     courseGrade > 100
   ) {
-    return { error: 'Course grade is not valid' };
+    return { error: "Course grade is not valid" };
   }
 
-  if (courseName === '') {
-    return { error: 'Course name is required' };
+  if (courseName === "") {
+    return { error: "Course name is required" };
   }
 
   try {
-    const response = await fetch('/api/addGrade', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    const response = await fetch("/api/addGrade", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         password,
         studentID,
@@ -118,13 +118,13 @@ export async function getTranscript(
 ): Promise<z.infer<typeof zGetTranscriptResponse>> {
   const studentID = parseInt(studentIDStr);
   if (isNaN(studentID) || `${studentID}` !== studentIDStr || studentID < 0) {
-    return { error: 'Student ID is invalid' };
+    return { error: "Student ID is invalid" };
   }
 
   try {
-    const response = await fetch('/api/getTranscript', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    const response = await fetch("/api/getTranscript", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         password,
         studentID,

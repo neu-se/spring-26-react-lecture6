@@ -1,4 +1,4 @@
-import { type StudentID, type Student, type Course, type Transcript } from './types.ts';
+import { type StudentID, type Student, type Course, type Transcript } from "./types.ts";
 
 export class TranscriptDB {
   /**
@@ -38,7 +38,7 @@ export class TranscriptDB {
    * @throws if the there is no transcript with the given student ID
    */
   private _getIndexForId(id: StudentID): number {
-    const index: number = this._transcripts.findIndex(t => t.student.studentID === id);
+    const index: number = this._transcripts.findIndex((t) => t.student.studentID === id);
     if (index === -1) {
       throw new Error(`Transcript not found for student with ID ${id}`);
     }

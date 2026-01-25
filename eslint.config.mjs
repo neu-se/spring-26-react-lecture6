@@ -1,10 +1,10 @@
-import { defineConfig, globalIgnores } from 'eslint/config';
-import eslint from '@eslint/js';
-import tseslint from 'typescript-eslint';
-import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
-import eslintPluginImport from 'eslint-plugin-import';
-import reactHooks from 'eslint-plugin-react-hooks';
-import reactRefresh from 'eslint-plugin-react-refresh';
+import { defineConfig, globalIgnores } from "eslint/config";
+import eslint from "@eslint/js";
+import tseslint from "typescript-eslint";
+import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
+import eslintPluginImport from "eslint-plugin-import";
+import reactHooks from "eslint-plugin-react-hooks";
+import reactRefresh from "eslint-plugin-react-refresh";
 
 /**
  * We want @typescript-eslint/naming-convention to enforce different naming
@@ -15,112 +15,112 @@ import reactRefresh from 'eslint-plugin-react-refresh';
 const commonNamingConventions = [
   {
     // Variables are camelCase: `nimGameService`, `row`
-    selector: ['variable'],
-    format: ['camelCase'],
-    leadingUnderscore: 'allow',
+    selector: ["variable"],
+    format: ["camelCase"],
+    leadingUnderscore: "allow",
   },
   {
     // Functions, methods, and members are too: `allGuessed`, `start`, `viewAs`, `isDone`
-    selector: ['function', 'method', 'memberLike'],
-    format: ['camelCase'],
+    selector: ["function", "method", "memberLike"],
+    format: ["camelCase"],
   },
   {
     // Types and class names are PascalCase: `GameService`, `NimState`
-    selector: 'typeLike',
-    format: ['PascalCase'],
+    selector: "typeLike",
+    format: ["PascalCase"],
   },
   {
     // Global constants are UPPER_CASE: `PORT`, `THREAD_API_URL`
-    selector: 'variable',
-    modifiers: ['global', 'const'],
-    types: ['boolean', 'number', 'string', 'array'],
-    format: ['UPPER_CASE'],
+    selector: "variable",
+    modifiers: ["global", "const"],
+    types: ["boolean", "number", "string", "array"],
+    format: ["UPPER_CASE"],
   },
   {
     // Private methods and fields must have a leading underscore: this._count
-    selector: ['memberLike', 'method'],
-    modifiers: ['private'],
-    format: ['camelCase'],
-    leadingUnderscore: 'require',
+    selector: ["memberLike", "method"],
+    modifiers: ["private"],
+    format: ["camelCase"],
+    leadingUnderscore: "require",
   },
   {
     // No limits on things like 'Content-Type' in a fetch object
-    selector: 'objectLiteralProperty',
-    modifiers: ['requiresQuotes'],
+    selector: "objectLiteralProperty",
+    modifiers: ["requiresQuotes"],
     format: null,
   },
 ];
 
 export default defineConfig([
   globalIgnores([
-    '**/build', // legacy output directory
-    '**/dist', // vite's output directory
-    '**/.stryker-tmp/', // stryker mutation reports
-    '**/coverage', // istanbul coverage reports
-    '**/playwright-report/', // playwright test reports
+    "**/build", // legacy output directory
+    "**/dist", // vite's output directory
+    "**/.stryker-tmp/", // stryker mutation reports
+    "**/coverage", // istanbul coverage reports
+    "**/playwright-report/", // playwright test reports
   ]),
   {
-    files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'],
+    files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"],
     extends: [
       eslint.configs.recommended,
       eslintPluginImport.flatConfigs.recommended,
       eslintPluginImport.flatConfigs.typescript,
     ],
     settings: {
-      'import/resolver': { typescript: true },
+      "import/resolver": { typescript: true },
     },
     rules: {
-      'eqeqeq': 'error',
-      'import/extensions': ['warn', 'ignorePackages'],
-      'import/no-amd': 'error',
-      'import/no-commonjs': 'error',
-      'import/no-empty-named-blocks': 'error',
-      'import/no-extraneous-dependencies': [
-        'error',
+      eqeqeq: "error",
+      "import/extensions": ["warn", "ignorePackages"],
+      "import/no-amd": "error",
+      "import/no-commonjs": "error",
+      "import/no-empty-named-blocks": "error",
+      "import/no-extraneous-dependencies": [
+        "error",
         {
           // devDependencies can be imported in config and test files
           devDependencies: [
-            '**/*.config.mjs',
-            '**/*.{spec,test}.{ts,tsx}',
-            '**/tests/**/*.{ts,tsx}',
+            "**/*.config.mjs",
+            "**/*.{spec,test}.{ts,tsx}",
+            "**/tests/**/*.{ts,tsx}",
           ],
           includeInternal: true,
         },
       ],
-      'import/no-import-module-exports': 'error',
-      'import/no-named-as-default': 'error',
-      'import/no-named-as-default-member': 'off',
-      'no-console': 'warn',
-      'no-param-reassign': 'error',
-      'no-plusplus': 'error',
-      'no-throw-literal': 'error',
-      'no-unused-vars': ['error', { args: 'none', caughtErrors: 'none' }],
+      "import/no-import-module-exports": "error",
+      "import/no-named-as-default": "error",
+      "import/no-named-as-default-member": "off",
+      "no-console": "warn",
+      "no-param-reassign": "error",
+      "no-plusplus": "error",
+      "no-throw-literal": "error",
+      "no-unused-vars": ["error", { args: "none", caughtErrors: "none" }],
     },
   },
   {
-    files: ['**/*.{ts,tsx}'],
+    files: ["**/*.{ts,tsx}"],
     extends: tseslint.configs.recommendedTypeChecked,
     languageOptions: { parserOptions: { projectService: true } },
     rules: {
-      '@typescript-eslint/naming-convention': [
-        'error',
+      "@typescript-eslint/naming-convention": [
+        "error",
         ...commonNamingConventions,
         {
           // Keyv repository models are more like classes with static methods
           // than other constants, so this rule makes them PascalCase
           // (`GameRepo`) instead of the default camelCase.
-          selector: 'variable',
-          modifiers: ['global'],
-          filter: { regex: 'Repo$', match: true },
-          format: ['PascalCase'],
+          selector: "variable",
+          modifiers: ["global"],
+          filter: { regex: "Repo$", match: true },
+          format: ["PascalCase"],
         },
       ],
-      '@typescript-eslint/no-unused-vars': [
-        'error',
-        { args: 'none', varsIgnorePattern: '^_', caughtErrors: 'none' },
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        { args: "none", varsIgnorePattern: "^_", caughtErrors: "none" },
       ],
-      '@typescript-eslint/no-misused-promises': [
-        'error',
+      "@typescript-eslint/no-misused-promises": [
+        "error",
         {
           checksVoidReturn: {
             arguments: false,
@@ -128,23 +128,23 @@ export default defineConfig([
           },
         },
       ],
-      '@typescript-eslint/restrict-template-expressions': 'off',
-      '@typescript-eslint/no-unsafe-member-access': ['error', { allowOptionalChaining: true }],
+      "@typescript-eslint/restrict-template-expressions": "off",
+      "@typescript-eslint/no-unsafe-member-access": ["error", { allowOptionalChaining: true }],
     },
   },
   {
-    files: ['{client,frontend}/**/*.{ts,tsx}'],
+    files: ["{client,frontend}/**/*.{ts,tsx}"],
     extends: [reactHooks.configs.flat.recommended, reactRefresh.configs.recommended],
     rules: {
-      '@typescript-eslint/naming-convention': [
-        'error',
+      "@typescript-eslint/naming-convention": [
+        "error",
         ...commonNamingConventions,
         {
           // React components want to be PascalCase: `AuthContext`, `ThreadPage`
           // Therefore, the camelCase-only restriction is relaxed for globals.
-          selector: ['function', 'variable'],
-          modifiers: ['global'],
-          format: ['camelCase', 'PascalCase'],
+          selector: ["function", "variable"],
+          modifiers: ["global"],
+          format: ["camelCase", "PascalCase"],
         },
       ],
     },
@@ -152,15 +152,15 @@ export default defineConfig([
   {
     // Test files may need to make use of the `any` type in a way we want to
     // prevent in normal code.
-    files: ['**/*.{spec,test}.{ts,tsx}', '**/tests'],
+    files: ["**/*.{spec,test}.{ts,tsx}", "**/tests"],
     rules: {
-      '@typescript-eslint/no-unsafe-assignment': 'off',
-      '@typescript-eslint/no-unsafe-member-access': 'off',
-      '@typescript-eslint/unbound-method': 'off',
+      "@typescript-eslint/no-unsafe-assignment": "off",
+      "@typescript-eslint/no-unsafe-member-access": "off",
+      "@typescript-eslint/unbound-method": "off",
     },
   },
   {
     extends: [eslintPluginPrettierRecommended],
-    rules: { 'prettier/prettier': 'warn' },
+    rules: { "prettier/prettier": "warn" },
   },
 ]);

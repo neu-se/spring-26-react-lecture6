@@ -1,8 +1,8 @@
-import express from 'express';
-import { z } from 'zod';
-import { checkPassword } from './auth.service.ts';
-import { TranscriptDB } from './transcript.service.ts';
-import type { Transcript } from './types.ts';
+import express from "express";
+import { z } from "zod";
+import { checkPassword } from "./auth.service.ts";
+import { TranscriptDB } from "./transcript.service.ts";
+import type { Transcript } from "./types.ts";
 
 export const app = express();
 app.use(express.json());
@@ -13,12 +13,12 @@ const zAddStudentBody = z.object({
   password: z.string(),
   studentName: z.string(),
 });
-app.post('/api/addStudent', (req, res) => {
+app.post("/api/addStudent", (req, res) => {
   const body = zAddStudentBody.safeParse(req.body);
   if (!body.success) {
-    res.status(400).send({ error: 'Poorly-formed request' });
+    res.status(400).send({ error: "Poorly-formed request" });
   } else if (!checkPassword(body.data.password)) {
-    res.status(403).send({ error: 'Invalid credentials' });
+    res.status(403).send({ error: "Invalid credentials" });
   } else {
     const id = db.addStudent(body.data.studentName);
     res.send({ studentID: id });
@@ -32,17 +32,17 @@ const zAddGradeBody = z.object({
   courseName: z.string(),
   courseGrade: z.number().gte(0).lte(100),
 });
-app.post('/api/addGrade', (req, res) => {
+app.post("/api/addGrade", (req, res) => {
   try {
     const body = zAddGradeBody.parse(req.body);
     if (!checkPassword(body.password)) {
-      res.status(403).send({ error: 'Invalid credentials' });
+      res.status(403).send({ error: "Invalid credentials" });
     } else {
       db.addGrade(body.studentID, body.courseName, body.courseGrade);
       res.send({ success: true });
     }
   } catch (e) {
-    res.status(400).send({ error: 'Poorly-formed request' });
+    res.status(400).send({ error: "Poorly-formed request" });
   }
 });
 
@@ -51,12 +51,12 @@ const zGetTranscriptBody = z.object({
   password: z.string(),
   studentID: z.int().gte(0),
 });
-app.post('/api/getTranscript', (req, res) => {
+app.post("/api/getTranscript", (req, res) => {
   const body = zGetTranscriptBody.safeParse(req.body);
   if (!body.success) {
-    res.status(400).send({ error: 'Poorly-formed request' });
+    res.status(400).send({ error: "Poorly-formed request" });
   } else if (!checkPassword(body.data.password)) {
-    res.status(403).send({ error: 'Invalid credentials' });
+    res.status(403).send({ error: "Invalid credentials" });
   } else {
     let response: { success: true; transcript: Transcript } | { success: false };
     try {

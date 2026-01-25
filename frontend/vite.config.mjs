@@ -1,7 +1,7 @@
-import { defineConfig } from 'vitest/config';
+import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   server: {
-    proxy: { '/api': `http://localhost:3000` },
+    proxy: { "/api": `http://localhost:3000` },
   },
 });

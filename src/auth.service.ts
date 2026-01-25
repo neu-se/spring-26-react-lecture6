@@ -3,5 +3,5 @@
  * @param password provided password
  */
 export function checkPassword(password: string): boolean {
-  return password === 'password';
+  return password === "password";
 }
