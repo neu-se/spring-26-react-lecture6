@@ -43,6 +43,12 @@ const commonNamingConventions = [
     format: ['camelCase'],
     leadingUnderscore: 'require',
   },
+  {
+    // No limits on things like 'Content-Type' in a fetch object
+    selector: 'objectLiteralProperty',
+    modifiers: ['requiresQuotes'],
+    format: null,
+  },
 ];
 
 export default defineConfig([
