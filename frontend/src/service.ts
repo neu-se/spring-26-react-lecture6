@@ -1,46 +1,42 @@
 import { z } from "zod";
 
-const zAddStudentResponse = z.union([
-  z.object({ error: z.string() }),
-  z.object({ studentID: z.int() }),
-]);
+export class ServiceError extends Error {
+  constructor(message: string) {
+    super(message);
+  }
+}
 
+const zError = z.object({ error: z.string() });
+
+const zAddStudentResponse = z.object({ studentID: z.int() });
 /**
  * Validate inputs and call the `addStudent` api
  *
  * @param password - credentials
  * @param studentName - a student name (error if empty)
- * @returns a validation error or API response
+ * @returns successful API response
+ * @throws if validation fails or there is an API response error
  */
 export async function addStudent(
   password: string,
   studentName: string,
 ): Promise<z.infer<typeof zAddStudentResponse>> {
-  if (studentName === "") {
-    return { error: "Student name must be non-empty" };
-  }
+  if (studentName === "") throw new ServiceError("Student name must be non-empty");
 
-  try {
-    const response = await fetch("/api/addStudent", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        password,
-        studentName,
-      }),
-    });
-    const data = zAddStudentResponse.parse(await response.json());
-    return data;
-  } catch (e) {
-    return { error: `(unexpected) ${e}` };
-  }
+  const response = await fetch("/api/addStudent", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      password,
+      studentName,
+    }),
+  });
+  const data = z.union([zError, zAddStudentResponse]).parse(await response.json());
+  if ("error" in data) throw new ServiceError(data.error);
+  return data;
 }
 
-const zAddGradeResponse = z.union([
-  z.object({ error: z.string() }),
-  z.object({ success: z.literal(true) }),
-]);
-
+const zAddGradeResponse = z.object({ success: z.literal(true) });
 /**
  * Validate inputs and call the `addGrade` api
  *
@@ -48,7 +44,8 @@ const zAddGradeResponse = z.union([
  * @param studentIDStr - student ID (error if not a positive integer)
  * @param courseName - student name
  * @param courseGradeStr - course grade (error if not a number between 0 and 100, inclusive)
- * @returns a validation error or API response
+ * @returns successful API response
+ * @throws if validation fails or there is an API response error
  */
 export async function addGrade(
   password: string,
@@ -58,7 +55,7 @@ export async function addGrade(
 ): Promise<z.infer<typeof zAddGradeResponse>> {
   const studentID = parseInt(studentIDStr);
   if (isNaN(studentID) || `${studentID}` !== studentIDStr || studentID < 0) {
-    return { error: "Student ID is invalid" };
+    throw new ServiceError("Student ID is invalid");
   }
 
   const courseGrade = parseFloat(courseGradeStr);
@@ -68,33 +65,29 @@ export async function addGrade(
     courseGrade < 0 ||
     courseGrade > 100
   ) {
-    return { error: "Course grade is not valid" };
+    throw new ServiceError("Course grade is not valid");
   }
 
   if (courseName === "") {
-    return { error: "Course name is required" };
+    throw new ServiceError("Course name is required");
   }
 
-  try {
-    const response = await fetch("/api/addGrade", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        password,
-        studentID,
-        courseName,
-        courseGrade,
-      }),
-    });
-    const data = zAddGradeResponse.parse(await response.json());
-    return data;
-  } catch (e) {
-    return { error: `(unexpected) ${e}` };
-  }
+  const response = await fetch("/api/addGrade", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      password,
+      studentID,
+      courseName,
+      courseGrade,
+    }),
+  });
+  const data = z.union([zError, zAddGradeResponse]).parse(await response.json());
+  if ("error" in data) throw new ServiceError(data.error);
+  return data;
 }
 
 const zGetTranscriptResponse = z.union([
-  z.object({ error: z.string() }),
   z.object({ success: z.literal(false) }),
   z.object({
     success: z.literal(true),
@@ -110,7 +103,8 @@ const zGetTranscriptResponse = z.union([
  *
  * @param password - credentials
  * @param studentIDStr - student ID (error if not a positive integer)
- * @returns a validation error or API response
+ * @returns successful API response
+ * @throws if validation fails or there is an API response error
  */
 export async function getTranscript(
   password: string,
@@ -118,21 +112,18 @@ export async function getTranscript(
 ): Promise<z.infer<typeof zGetTranscriptResponse>> {
   const studentID = parseInt(studentIDStr);
   if (isNaN(studentID) || `${studentID}` !== studentIDStr || studentID < 0) {
-    return { error: "Student ID is invalid" };
+    throw new ServiceError("Student ID is invalid");
   }
 
-  try {
-    const response = await fetch("/api/getTranscript", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        password,
-        studentID,
-      }),
-    });
-    const data = zGetTranscriptResponse.parse(await response.json());
-    return data;
-  } catch (e) {
-    return { error: `(unexpected) ${e}` };
-  }
+  const response = await fetch("/api/getTranscript", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      password,
+      studentID,
+    }),
+  });
+  const data = z.union([zError, zGetTranscriptResponse]).parse(await response.json());
+  if ("error" in data) throw new ServiceError(data.error);
+  return data;
 }
