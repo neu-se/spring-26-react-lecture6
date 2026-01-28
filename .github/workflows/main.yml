@@ -22,7 +22,7 @@ jobs:
       - name: Install dependencies
         run: |
           npm ci
-          npx playwright install
+          npx playwright install --with-deps
 
       - name: Typescript
         run: npm run check
