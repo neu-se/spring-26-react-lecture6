@@ -9,14 +9,16 @@
     "lint:fix": "eslint . --fix",
     "prettier": "prettier --check .",
     "prettier:fix": "prettier --write .",
-    "test": "vitest run --config frontend/vite.config.mjs --coverage",
+    "test": "npx playwright run",
     "dev": "vite frontend",
     "build": "tsc -p frontend/tsconfig.json && vite build frontend",
-    "start": "vite preview frontend"
+    "start": "vite preview frontend",
+    "playwright": "npx playwright run --ui"
   },
   "author": "Rob Simmons",
   "devDependencies": {
     "@eslint/js": "^9.39.2",
+    "@playwright/test": "^1.58.0",
     "@types/express": "^5.0.6",
     "@types/react": "^19.2.9",
     "@types/react-dom": "^19.2.3",
