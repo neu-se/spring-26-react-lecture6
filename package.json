@@ -9,11 +9,11 @@
     "lint:fix": "eslint . --fix",
     "prettier": "prettier --check .",
     "prettier:fix": "prettier --write .",
-    "test": "npx playwright run",
+    "test": "playwright test",
     "dev": "vite frontend",
     "build": "tsc -p frontend/tsconfig.json && vite build frontend",
     "start": "vite preview frontend",
-    "playwright": "npx playwright run --ui"
+    "playwright": "playwright test --ui"
   },
   "author": "Rob Simmons",
   "devDependencies": {
