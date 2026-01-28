@@ -1,21 +1,57 @@
 import { useState } from "react";
-import { PasswordContext } from "./PasswordContext.ts";
-import TranscriptTabs from "./TranscriptTabs.tsx";
+import { io } from "socket.io-client";
+import { z } from "zod";
+import OffsetClock from "./OffsetClock.tsx";
+
+/** Base URL of the clock server */
+const CLOCK_URI = "https://clock-socket.onrender.com";
+
+/** Expected payload for the "/api/status" GET endpoint */
+const zStatusPayload = z.object({ currentTick: z.iso.datetime(), currentCount: z.int().gte(0) });
+
+/** Expected payload for the "count" socket.io event */
+const zCountPayload = z.object({ count: z.int().gte(0), watchers: z.int().gte(0) });
+
+/** Expected payload for the "tick" socket.io event */
+const zTickPayload = z.object({ time: z.iso.datetime(), watchers: z.int().gte(0) });
+
+const CLOCKS = [
+  { id: "Atlanta", offset: -5 },
+  { id: "Boston", offset: -5 },
+  { id: "Los Angeles", offset: -8 },
+  { id: "London", offset: 0 },
+  { id: "Tokyo", offset: 9 },
+];
 
 export default function App() {
-  const [password, setPassword] = useState("");
+  const [error, setError] = useState<null | string>(null);
+  const [now, setNow] = useState<Date>(new Date());
 
   return (
-    <>
-      <h1>Transcript service</h1>
-      <div>
-        <label htmlFor="password">Enter credentials:</label>
-        <br />
-        <input id="password" onChange={(ev) => setPassword(ev.target.value)} />
-        <PasswordContext.Provider value={password}>
-          <TranscriptTabs />
-        </PasswordContext.Provider>
+    <div style={{ width: 600, margin: "auto" }}>
+      <div style={{ display: "flex", flexDirection: "row", gap: "1em" }}>
+        {CLOCKS.map(({ id, offset }) => (
+          <OffsetClock key={id} city={id} offset={offset} datetime={now} />
+        ))}
       </div>
-    </>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "1em",
+          paddingBlock: "1em",
+        }}
+      >
+        <button onClick={() => setNow(new Date())}>Update time</button>
+        {error === null ? (
+          <button onClick={() => setError("Why did you create problems on purpose?")}>
+            Create an error
+          </button>
+        ) : (
+          <button onClick={() => setError(null)}>Clear errors</button>
+        )}
+      </div>
+      {error && <div style={{ color: "red" }}>{error}</div>}
+    </div>
   );
 }
