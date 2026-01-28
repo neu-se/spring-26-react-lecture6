@@ -34,8 +34,7 @@ const CLOCKS = [
   { id: "Tokyo", offset: 9 },
 ];
 
-export default function App() {
-  const [error, setError] = useState<null | string>(null);
+function useSocketConnection(setError: (error: string) => void, isWatching: boolean) {
   const [now, setNow] = useState<null | Date>(null);
 
   useEffect(() => {
@@ -45,13 +44,41 @@ export default function App() {
         const data = zStatusPayload.parse(json);
         setNow(new Date(data.currentTick));
       })
-      .catch((err) =>
-        setError(`Unexpected error when fetching: ${err}`),
-      );
+      .catch((err) => setError(`Unexpected error when fetching: ${err}`));
   }, []);
+
+  const [watchers, setWatchers] = useState<null | number>(null);
+  useEffect(() => {
+    if (!isWatching) {
+      console.log(`Not watching, no web socket connection`);
+      return () => {
+        console.log(`Not watching, so no cleanup to do`);
+      };
+    }
+    console.log(`Establishing web socket connection`);
+    const socket = io(CLOCK_URI);
+    socket.on("tick", (payload) => {
+      const data = zTickPayload.parse(payload);
+      setNow(new Date(data.time));
+      setWatchers(data.watchers);
+    });
+    return () => {
+      console.log(`Closing web socket connection`);
+      socket.disconnect();
+    };
+  }, [isWatching]);
+
+  return { now, watchers };
+}
+
+export default function App() {
+  const [error, setError] = useState<null | string>(null);
+  const [isWatching, setIsWatching] = useState(false);
+  const { now, watchers } = useSocketConnection(setError, isWatching);
 
   return (
     <div style={{ width: 600, margin: "auto" }}>
+      {watchers !== null && `There are ${watchers} watcher(s)`}
       <div
         style={{
           display: "flex",
@@ -59,14 +86,10 @@ export default function App() {
           gap: "1em",
         }}
       >
-        {now &&
+        {now === null && "Loading..."}
+        {now !== null &&
           CLOCKS.map(({ id, offset }) => (
-            <OffsetClock
-              key={id}
-              city={id}
-              offset={offset}
-              datetime={now}
-            />
+            <OffsetClock key={id} city={id} offset={offset} datetime={now} />
           ))}
       </div>
       <div
@@ -77,21 +100,16 @@ export default function App() {
           paddingBlock: "1em",
         }}
       >
-        {error === null ? (
-          <button
-            onClick={() =>
-              setError(
-                "Why did you create problems on purpose?",
-              )
-            }
-          >
+        {error === null && (
+          <button onClick={() => setError("Why did you create problems on purpose?")}>
             Create an error
           </button>
-        ) : (
-          <button onClick={() => setError(null)}>
-            Clear errors
-          </button>
         )}
+        {error !== null && <button onClick={() => setError(null)}>Clear errors</button>}
+        <button onClick={() => setIsWatching(!isWatching)}>
+          {isWatching && "Stop"}
+          {!isWatching && "Start"} watching
+        </button>
       </div>
       {error && <div style={{ color: "red" }}>{error}</div>}
     </div>
