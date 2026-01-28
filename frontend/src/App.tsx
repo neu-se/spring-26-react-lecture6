@@ -1,4 +1,6 @@
-import { useState } from "react";
+/* eslint @typescript-eslint/no-unused-vars: "off" */
+
+import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { z } from "zod";
 import OffsetClock from "./OffsetClock.tsx";
@@ -25,14 +27,25 @@ const CLOCKS = [
 
 export default function App() {
   const [error, setError] = useState<null | string>(null);
-  const [now, setNow] = useState<Date>(new Date());
+  const [now, setNow] = useState<null | Date>(null);
+
+  useEffect(() => {
+    fetch(CLOCK_URI + "/api/status")
+      .then((response) => response.json())
+      .then((json) => {
+        const data = zStatusPayload.parse(json);
+        setNow(new Date(data.currentTick));
+      })
+      .catch((err) => setError(`Unexpected error when fetching: ${err}`));
+  }, []);
 
   return (
     <div style={{ width: 600, margin: "auto" }}>
       <div style={{ display: "flex", flexDirection: "row", gap: "1em" }}>
-        {CLOCKS.map(({ id, offset }) => (
-          <OffsetClock key={id} city={id} offset={offset} datetime={now} />
-        ))}
+        {now &&
+          CLOCKS.map(({ id, offset }) => (
+            <OffsetClock key={id} city={id} offset={offset} datetime={now} />
+          ))}
       </div>
       <div
         style={{
@@ -42,7 +55,6 @@ export default function App() {
           paddingBlock: "1em",
         }}
       >
-        <button onClick={() => setNow(new Date())}>Update time</button>
         {error === null ? (
           <button onClick={() => setError("Why did you create problems on purpose?")}>
             Create an error
