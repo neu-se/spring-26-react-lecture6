@@ -1,5 +1,5 @@
 {
-  "printWidth": 100,
+  "printWidth": 60,
   "proseWrap": "always",
   "overrides": [{ "files": "*.md", "options": { "printWidth": 78 } }]
 }
