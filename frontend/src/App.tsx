@@ -45,9 +45,7 @@ export default function App() {
         const data = zStatusPayload.parse(json);
         setNow(new Date(data.currentTick));
       })
-      .catch((err) =>
-        setError(`Unexpected error when fetching: ${err}`),
-      );
+      .catch((err) => setError(`Unexpected error when fetching: ${err}`));
   }, []);
 
   return (
@@ -61,12 +59,7 @@ export default function App() {
       >
         {now &&
           CLOCKS.map(({ id, offset }) => (
-            <OffsetClock
-              key={id}
-              city={id}
-              offset={offset}
-              datetime={now}
-            />
+            <OffsetClock key={id} city={id} offset={offset} datetime={now} />
           ))}
       </div>
       <div
@@ -78,19 +71,11 @@ export default function App() {
         }}
       >
         {error === null ? (
-          <button
-            onClick={() =>
-              setError(
-                "Why did you create problems on purpose?",
-              )
-            }
-          >
+          <button onClick={() => setError("Why did you create problems on purpose?")}>
             Create an error
           </button>
         ) : (
-          <button onClick={() => setError(null)}>
-            Clear errors
-          </button>
+          <button onClick={() => setError(null)}>Clear errors</button>
         )}
       </div>
       {error && <div style={{ color: "red" }}>{error}</div>}
