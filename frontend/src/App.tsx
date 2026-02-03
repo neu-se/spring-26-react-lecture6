@@ -1,9 +1,15 @@
 /* eslint @typescript-eslint/no-unused-vars: "off" */
 
-import { useEffect, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { io } from "socket.io-client";
 import { z } from "zod";
 import OffsetClock from "./OffsetClock.tsx";
+import { TimeContext } from "./TimeContext.ts";
 
 /** Base URL of the clock server */
 const CLOCK_URI = "https://clock-socket.onrender.com";
@@ -34,9 +40,12 @@ const CLOCKS = [
   { id: "Tokyo", offset: 9 },
 ];
 
-export default function App() {
-  const [error, setError] = useState<null | string>(null);
+function useTimeServer(
+  setError: (err: string) => void,
+  isWatching: boolean,
+) {
   const [now, setNow] = useState<null | Date>(null);
+  const [watchers, setWatchers] = useState<number>(0);
 
   useEffect(() => {
     fetch(CLOCK_URI + "/api/status")
@@ -50,50 +59,91 @@ export default function App() {
       );
   }, []);
 
+  useEffect(() => {
+    if (!isWatching) return;
+    console.log("Setting up web socket");
+    const socket = io(CLOCK_URI);
+
+    socket.on("tick", (payload) => {
+      const data = zTickPayload.parse(payload);
+      setNow(new Date(data.time));
+      setWatchers(data.watchers);
+      console.log(payload);
+    });
+
+    return () => {
+      console.log("Shutting down web socket");
+      socket.disconnect();
+    };
+  }, [isWatching]);
+
+  return { now, watchers };
+}
+
+export default function App() {
+  const [error, setError] = useState<null | string>(null);
+  const [isWatching, setIsWatching] = useState(false);
+  const { now, watchers } = useTimeServer(
+    setError,
+    isWatching,
+  );
+
   return (
-    <div style={{ width: 600, margin: "auto" }}>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          gap: "1em",
-        }}
-      >
-        {now &&
-          CLOCKS.map(({ id, offset }) => (
-            <OffsetClock
-              key={id}
-              city={id}
-              offset={offset}
-              datetime={now}
-            />
-          ))}
-      </div>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "1em",
-          paddingBlock: "1em",
-        }}
-      >
-        {error === null ? (
+    <TimeContext value={now}>
+      <div style={{ width: 600, margin: "auto" }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            gap: "1em",
+          }}
+        >
+          {now &&
+            CLOCKS.map(({ id, offset }) => (
+              <OffsetClock
+                key={id}
+                city={id}
+                offset={offset}
+              />
+            ))}
+        </div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "1em",
+            paddingBlock: "1em",
+          }}
+        >
+          {error === null ? (
+            <button
+              onClick={() =>
+                setError(
+                  "Why did you create problems on purpose?",
+                )
+              }
+            >
+              Create an error
+            </button>
+          ) : (
+            <button onClick={() => setError(null)}>
+              Clear errors
+            </button>
+          )}
           <button
-            onClick={() =>
-              setError(
-                "Why did you create problems on purpose?",
-              )
-            }
+            onClick={() => setIsWatching(!isWatching)}
           >
-            Create an error
+            {isWatching ? "Stop" : "Start"} watching the
+            clock
           </button>
-        ) : (
-          <button onClick={() => setError(null)}>
-            Clear errors
-          </button>
+        </div>
+        {error && (
+          <div style={{ color: "red" }}>{error}</div>
+        )}
+        {isWatching && (
+          <div>There are {watchers} watchers.</div>
         )}
       </div>
-      {error && <div style={{ color: "red" }}>{error}</div>}
-    </div>
+    </TimeContext>
   );
 }
