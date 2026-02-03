@@ -38,17 +38,7 @@ export default function App() {
   const [error, setError] = useState<null | string>(null);
   const [now, setNow] = useState<null | Date>(null);
 
-  useEffect(() => {
-    fetch(CLOCK_URI + "/api/status")
-      .then((response) => response.json())
-      .then((json) => {
-        const data = zStatusPayload.parse(json);
-        setNow(new Date(data.currentTick));
-      })
-      .catch((err) =>
-        setError(`Unexpected error when fetching: ${err}`),
-      );
-  }, []);
+  if (now === null) setNow(new Date()); // This is pretty bogus, don't ever do this
 
   return (
     <div style={{ width: 600, margin: "auto" }}>
@@ -61,12 +51,7 @@ export default function App() {
       >
         {now &&
           CLOCKS.map(({ id, offset }) => (
-            <OffsetClock
-              key={id}
-              city={id}
-              offset={offset}
-              datetime={now}
-            />
+            <OffsetClock key={id} city={id} offset={offset} datetime={now} />
           ))}
       </div>
       <div
@@ -78,19 +63,11 @@ export default function App() {
         }}
       >
         {error === null ? (
-          <button
-            onClick={() =>
-              setError(
-                "Why did you create problems on purpose?",
-              )
-            }
-          >
+          <button onClick={() => setError("Why did you create problems on purpose?")}>
             Create an error
           </button>
         ) : (
-          <button onClick={() => setError(null)}>
-            Clear errors
-          </button>
+          <button onClick={() => setError(null)}>Clear errors</button>
         )}
       </div>
       {error && <div style={{ color: "red" }}>{error}</div>}
